@@ -241,7 +241,7 @@ buyButton.addEventListener("click", async () => {
         // Store the selected products in localStorage
         localStorage.setItem("products", JSON.stringify(selectedProducts));
         alert("Order prepared. Redirecting to checkout...");
-        window.location.href = "/buy.html"; // Redirect after storing order
+        window.location.href = "/client/public/buy.html"; // Redirect after storing order
     } catch (error) {
         console.error("❌ Error sending order:", error);
     }

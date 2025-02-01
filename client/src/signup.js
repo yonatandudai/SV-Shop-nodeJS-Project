@@ -27,6 +27,7 @@ function createInput(type, placeholder) {
     }
 
 // Create the input fields
+const fullName = createInput('text', 'full name');
 const email = createInput('email', 'email');
 const password = createInput('password', 'password');
 
@@ -45,6 +46,7 @@ form.style.backgroundColor = '#76ABDF';
 
 // Append the input fields to the form
 form.appendChild(heading);
+form.appendChild(fullName);
 form.appendChild(email);
 form.appendChild(password);
 
@@ -63,45 +65,11 @@ function createButton(text) {
     return button;
 }
 
-// Create the buttons
-const signInButton = createButton('Sign in');
+// Create the button
 const signUpButton = createButton('Sign up');
 
-async function signIn(e) {
-    e.preventDefault();
-    try {
-        const response = await axios.post('http://localhost:3000/', {
-            email: email.value.trim(),
-            password: password.value.trim(),
-        });
-
-        if (response.status === 200 && response.data.user) {
-            const myName = response.data.user.name; // Get the name from the database
-            localStorage.setItem("fullname", myName); // Store it in localStorage
-
-            alert(`✅ Welcome back, ${myName}!`);
-            window.location.href = "/products.html"; // Redirect to products page
-        } else {
-            alert("❌ Invalid email or password. Please try again.");
-        }
-    } catch (error) {
-        console.error("❌ Error signing in:", error);
-        const errorMessage = error.response && error.response.data ? error.response.data.error : "An error occurred while signing in.";
-        alert(errorMessage);
-    }
-}
-
-
-
-// Create a function to go to the sign up page
-function goToSignUp(e) {
-    e.preventDefault();
-    window.location.href = '/signup.html';
-}
-
-// Add event listeners to the buttons
-signInButton.addEventListener('click', signIn);
-signUpButton.addEventListener('click', goToSignUp);
+// Add event listeners to the button
+signUpButton.addEventListener('click', signUp);
 
 // Create a container for the buttons
 const buttonContainer = document.createElement('div');
@@ -110,7 +78,6 @@ buttonContainer.style.justifyContent = 'center';
 buttonContainer.style.gap = '10px'; // Add space between buttons
 
 // Append buttons to the container
-buttonContainer.appendChild(signInButton);
 buttonContainer.appendChild(signUpButton);
 
 // Append the container to the form
@@ -119,4 +86,28 @@ form.appendChild(buttonContainer);
 // Append the form to the body
 document.body.appendChild(form);
 
+// Create a function to sign up
+async function signUp(e) {
+    e.preventDefault();
+    const nameVal = fullName.value;
+    
+    try {
+        const response = await axios.post("http://localhost:3000/signup/", {
+            name: nameVal,
+            email: email.value,
+            password: password.value,
+        });
 
+        if (response.status === 200) {
+            alert("✅ User created successfully");
+            window.location.href = "/client/public/main.html"; // Redirect to homepage
+        }
+    } catch (error) {
+        if (error.response && error.response.status === 400) {
+            alert("Email already exists. Please try again.");
+        } else {
+            console.error("Error signing up:", error);
+            alert("An error occurred while signing up. Please try again later.");
+        }
+    }
+}

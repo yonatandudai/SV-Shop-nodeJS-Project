@@ -59,7 +59,7 @@ function logOut(){
     localStorage.removeItem("products");
 
     // Redirect to login or home page
-    window.location.href = "/main.html";
+    window.location.href = "/client/public/main.html";
 }
 
 // Function to save the products to the database
